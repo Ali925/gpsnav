@@ -157,7 +157,7 @@ angular
 
   }) 
     .controller('MainCtrl', function($scope, $rootScope){
-      $rootScope.apiurl = 'http://localhost:3000';
+      $rootScope.apiurl = 'https://api-courier-tracer.herokuapp.com';
     });
 
 
