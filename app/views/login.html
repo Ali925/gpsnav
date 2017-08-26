@@ -1,0 +1,38 @@
+<!--
+Inspired by http://dribbble.com/shots/917819-iPad-Calendar-Login?list=shots&sort=views&timeframe=ever&offset=461
+-->
+<div class="login-page">
+	<div class="row">
+		<div class="col-md-4 col-lg-4 col-md-offset-4 col-lg-offset-4">
+<!--        	<img src="images/flat-avatar.png" class="user-avatar" />-->
+			<h1>Отслеживание курьеров</h1>
+			<form role="form" ng-submit="submit()">
+
+				<div class="form-content">
+					<div class="form-group">
+						<input type="text" ng-class="loginError ? 'invalid' : 'valid'" ng-model="login" class="form-control input-underline input-lg" id="" placeholder="Логин" ng-change="validate()">
+					</div>
+
+					<div class="form-group">
+						<input type="password" ng-class="passError ? 'invalid' : 'valid'" ng-model="pass" class="form-control input-underline input-lg" id="" placeholder="Пароль" ng-change="validate()">
+					</div>
+
+					<div class="checkbox" ng-class="remember ? 'checkbox-active' : ''">
+					  <label><input type="checkbox" ng-model="remember">запомнить</label>
+					</div>
+					
+				</div>
+
+				<div class="alert-box" ng-show="showAlertBox">
+					Имя пользователя или пароль не опознаны
+					<button type="button" class="close" aria-label="Close" ng-click="showAlertBox=false;"><span aria-hidden="true">&times;</span></button>
+				</div>
+
+				<button type="submit" class="btn btn-white btn-outline btn-lg btn-rounded">Войти</button>
+
+			</form>
+
+		</div>	
+	</div>
+
+</div>

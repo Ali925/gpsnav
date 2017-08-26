@@ -1,0 +1,58 @@
+<div class="dashboard-page">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-3 col-md-2 opened-sidebar sidebar" ng-hide="showDash" ng-mouseleave="showClosedDash();">
+        <a href="" class="close-sidebar" ng-click="showClosedDash();">
+            <i class="fa fa-chevron-circle-left" aria-hidden="true"></i>
+        </a>
+       <div class="text-center clear">
+        <h2 class="brand">Отслеживание курьеров</h2>
+<!--        <img src="images/flat-avatar.png" class="user-avatar" /><br />-->
+        <a ui-sref="login" class="btn btn-white btn-outline btn-rounded btn-sm">Выйти</a>
+      </div>
+
+      <ul class="nav nav-sidebar">
+        <li ng-class="{active: $state.includes('maps')}"><a ui-sref="maps">Карта</a></li>
+        <li ng-class="{active: $state.includes('workers')}"><a ui-sref="workers">Менеджеры и курьеры</a></li>
+        <li ng-class="{active: $state.includes('sectors')}"><a ui-sref="sectors">Секторы</a></li>
+      </ul>
+
+    </div>
+    <div class="closed-sidebar text-center sidebar" ng-show="hideDash">
+        <a href="" class="open-sidebar" ng-click="hideDash=false;showDash=false;">
+            <i class="fa fa-bars" aria-hidden="true"></i>
+        </a>
+       
+
+      <ul class="nav nav-sidebar">
+        <li ng-class="{active: $state.includes('maps')}">
+            <a ui-sref="maps" class="sidebar-nav-buttons">
+                <i class="fa fa-map" aria-hidden="true"></i>
+            </a>
+        </li>
+        <li ng-class="{active: $state.includes('workers')}">
+            <a ui-sref="workers" class="sidebar-nav-buttons">
+                <i class="fa fa-users" aria-hidden="true"></i>
+            </a>
+        </li>
+        <li ng-class="{active: $state.includes('sectors')}">
+            <a ui-sref="sectors" class="sidebar-nav-buttons">
+                <i class="fa fa-crop" aria-hidden="true"></i>
+            </a>
+        </li>
+      </ul>
+      
+      <div class="text-center sidebar-header">
+<!--        <h2 class="brand">Ani Theme <small>Free Edition</small></h2>-->
+<!--        <img src="images/flat-avatar.png" class="user-avatar" /><br />-->
+        <a href="" class="logout-button" ng-click="logout()">
+            <i class="fa fa-sign-out" aria-hidden="true"></i>
+        </a>
+      </div>
+
+    </div>
+    <div class="main" ui-view>
+    </div>
+  </div>
+</div>
+</div>

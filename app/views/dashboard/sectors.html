@@ -1,0 +1,49 @@
+<div class="maps-page clearfix" ng-init="sectors.initSectors()">
+<!--	<a ui-sref="reports" class="pull-right btn btn-primary btn-outline btn-rounded">Reports</a>-->
+	<h2>Секторы</h2>
+	<div class="maps-selects sector-selects">
+			<a href="" class="tooltip-hint" tooltip-placement="bottom" uib-tooltip-template="'./views/myTooltipTemplate.html'" tooltip-is-open="true" ng-if="sectors.addNewSectorStarted || sectors.editSectorStarted">Подсказка</a>
+ 			<div class="form-group sector-buttons-group" ng-if="sectors.selectedSector && !sectors.editSectorStarted && sectors.isEditable">
+			 <div class="btn-group btn-group-sm" role="group" aria-label="sector-buttons">
+			 		<button type="button" class="btn btn-danger" ng-click="sectors.removeSector()">Удалить</button>
+			 		<button type="button" class="btn btn-primary" ng-click="sectors.editSector()">Редактировать</button>
+			 </div>	    
+		 </div>
+	 		<div class="form-group select-sector" ng-if="!sectors.addNewSectorStarted && !sectors.editSectorStarted">
+		   <label for="selectManager1" class="col-sm-8 col-md-6 control-label">Выберите сектор</label>
+		   <div class="col-sm-10">
+		     <select class="form-control" id="selectManager1" ng-options="item as item.title for item in sectors.loadedSectors track by item.id" ng-model="sectors.selectedSector" ng-change="sectors.updateMap()"></select>
+		   </div>
+		 </div>
+		 <div class="form-group sector-new-buttons-group" ng-if="sectors.addNewSectorStarted">
+			 <div class="btn-group btn-group-sm" role="group" aria-label="sector-buttons">
+			 		<button type="button" class="btn btn-danger" ng-click="sectors.saveNew()">Сохранить</button>
+			 		<button type="button" class="btn btn-primary" ng-click="sectors.cancelAddNew()">Отмена</button>
+			 </div>	    
+		 </div>
+		 <div class="form-group sector-new-buttons-group" ng-if="sectors.editSectorStarted">
+			 <div class="btn-group btn-group-sm" role="group" aria-label="sector-buttons">
+			 		<button type="button" class="btn btn-danger" ng-click="sectors.saveEdit()">Сохранить</button>
+			 		<button type="button" class="btn btn-primary" ng-click="sectors.cancelEdit()">Отмена</button>
+			 </div>	    
+		 </div>
+		 <div class="form-group select-sector" ng-if="sectors.editSectorStarted">
+		    <label for="titleOfSector">Имя сектора</label>
+    		<input type="text" class="form-control" id="titleOfSector" placeholder="Вводите имя..." ng-model='sectors.selectedSector.title'>
+		 </div>
+		 
+		 <div class="form-group select-sector" ng-if="sectors.addNewSectorStarted">
+		    <label for="titleOfSector">Имя сектора</label>
+    		<input type="text" class="form-control" id="titleOfSector" placeholder="Вводите имя..." ng-model='sectors.sectorTitle'>
+		 </div>
+		 <div class="form-group remove-sector" ng-if="(sectors.addNewSectorStarted || sectors.editSectorStarted) && sectors.sectorNum > 1">
+		    <button type="button" class="btn btn-danger" ng-click="sectors.removeLastSector()">- Удалить сектор {{sectors.sectorNum - 1}}</button>
+		 </div>
+		 <div class="form-group" ng-if="!sectors.addNewSectorStarted && !sectors.editSectorStarted">
+		   <button type="button" class="btn btn-success" ng-click="sectors.addNew()">+ Новый сектор</button>
+		  </div>
+		</div>
+	<div class="jumbotron">
+			<leaflet tiles="map.tiles" defaults="map.defaults" markers="map.markers" center="map.center" paths="map.paths" height="{{map.height}}" width="100%" ng-init="map.initMap();" event-broadcast="map.events"></leaflet>
+	</div>
+</div>

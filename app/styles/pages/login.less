@@ -1,0 +1,72 @@
+.login-page {
+
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	overflow: auto;
+
+    background: @brand-primary;
+
+	text-align: center;
+	color: #fff;
+
+	padding: 3em;
+
+	h1 {
+		font-weight: 300;
+		small {
+			color: rgba(255,255,255,0.7);
+		}
+	}
+
+	.form-group {
+		padding: 8px 0;
+		
+		.form-control.input-error{
+			border-color: #d9534f;
+    		background-color: rgba(255,0,0,.3);
+		}
+	}
+
+	.form-content {
+		padding: 40px 0;
+
+		.checkbox{
+			text-align: right;
+    		opacity: .6;
+		}
+		.checkbox-active{
+			opacity: 1;
+		}
+	}
+
+	.alert-box{
+		border: 1px solid rgba(255,255,255,.4);
+	    padding: 10px;
+	    background-color: #d9534f;
+	    margin-bottom: 25px;
+	}
+ 
+ form button.btn:focus, form button.btn:active:focus, form button.btn.active:focus, form button.btn.focus, form button.btn:active.focus, form button.btn.active.focus {
+    outline: none;
+  }
+  
+  form input.invalid {
+    border-color: rgba(250,120,126, 0.4);
+  }
+
+  form input.valid {
+    border-color: rgba(255,255,255,0.4);
+  }
+  
+  form input.invalid:focus {
+    border-color: rgba(250,120,126, 1);
+  }
+
+  form input.valid:focus {
+    border-color: rgba(255,255,255,1);
+  }
+
+}

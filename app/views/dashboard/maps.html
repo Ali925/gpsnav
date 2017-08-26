@@ -1,0 +1,27 @@
+<div class="maps-page clearfix" ng-init="map.startCouriers()">
+<!--	<a ui-sref="reports" class="pull-right btn btn-primary btn-outline btn-rounded">Reports</a>-->
+	<h2>Карта</h2>
+	<div class="map-selects">
+	 <div class="form-group">
+		   <label for="selectManager1" class="col-sm-8 col-md-6 control-label">Выберите сектор</label>
+		   <div class="col-sm-10">
+		     <select class="form-control" id="selectManager1" ng-options="item as item.title for item in map.sectors track by item.id" ng-model="map.selectedSector" ng-change="map.updateSector()"></select>
+		   </div>
+		 </div>
+		 <div class="form-group">
+		   <label for="selectManager1" class="col-sm-8 col-md-6 control-label">Выберите дату</label>
+		   <div class="col-sm-10">
+		     <select class="form-control" id="selectManager1" ng-options="item as item.date for item in map.coordinates track by item.id" ng-model="map.selectedDate" ng-change="map.updateDates()"></select>
+		   </div>
+		 </div>
+		 <div class="form-group">
+	    <label for="selectManager1" class="col-sm-8 col-md-6 control-label">Выберите курьера</label>
+	    <div class="col-sm-10">
+	      <select class="form-control" id="selectManager1" ng-options="item as item.fullName for item in map.couriersList track by item.id" ng-model="map.selectedCourier" ng-change="map.updateCoords()"></select>
+		   </div>
+		 </div>
+		</div>
+	<div class="jumbotron">
+			<leaflet tiles="map.tiles" defaults="defaults" markers="map.markers" center="map.center" paths="map.paths" height="{{map.height}}" width="100%" ng-init="map.initMap();"></leaflet>
+	</div>
+</div>
