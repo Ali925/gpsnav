@@ -2,10 +2,12 @@ var gulp = require('gulp'),
     browserSync = require('browser-sync'),
     reload = browserSync.reload;
 
+var port = process.env.PORT || 9000;
+
 gulp.task('server', function() {
 	browserSync({
    	  notify: false,
-   	  port: 9000,
+   	  port: port,
    	  server: {
     	baseDir: 'app'
       }
