@@ -32,7 +32,7 @@ angular.module('yapp')
           data: data
         }).then(function successCallback(response){
           console.log(response);
-           if(response.data.message==='Something went wrong'){
+           if(response.data.message==="Неверный логин или пароль"){
             $scope.showAlertBox = true;
            }
            else if(response.data.message.api && response.data.message.user_type === "courier"){
