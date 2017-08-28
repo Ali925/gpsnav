@@ -223,7 +223,7 @@ angular.module('yapp')
       var myPromise = $scope.map.updateCoords();
       
       myPromise.then(function(resolve){
-        leafletData.getMap().then(function(map) {
+        //leafletData.getMap().then(function(map) {
           $scope.map.selectedDate = selectedId;
       var dateNum = $scope.map.selectedDate.id, diffTime = 0;
 
@@ -428,7 +428,7 @@ angular.module('yapp')
 //
 //              });
          
-    });
+    //});
     });
       
     };
