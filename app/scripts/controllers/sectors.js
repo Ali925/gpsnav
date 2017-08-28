@@ -335,7 +335,7 @@ angular.module('yapp')
 			$scope.map.center = {
 				lat: centerCoord[0],
 				lng: centerCoord[1],
-				zoom: 12
+				zoom: 14
 			};
 			
 			if($scope.sectors.selectedSector.editable)
