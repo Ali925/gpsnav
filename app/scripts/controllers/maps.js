@@ -103,7 +103,8 @@ angular.module('yapp')
     };
 	
 		$scope.map.updateSector = function(){
-			var paths = JSON.parse($scope.map.selectedSector.coords);
+			var paths = JSON.parse($scope.map.selectedSector.coords),
+					allSectorCoords = [];
 			
 			for(var m in $scope.map.markers){
 				if(m.indexOf('sector') != -1)
@@ -119,6 +120,10 @@ angular.module('yapp')
 				$scope.map.paths[i] = paths[i];
 				
 				var centroid = getCentroid($scope.map.paths[i].latlngs);
+				allSectorCoords.push({
+					lat: centroid[0],
+					lng: centroid[1]
+				});
 				var res = i.substring(1);
 
 				$scope.map.markers['sector'+parseInt(res)] = {
@@ -134,6 +139,16 @@ angular.module('yapp')
 																												draggable: false
 																											};
 			}
+			
+			var centerCoord = getCentroid(allSectorCoords);
+			//console.log(centerCoord, allCoords);
+			if(allSectorCoords.length < 3)
+				centerCoord = [allSectorCoords[0].lat, allSectorCoords[0].lng];
+			$scope.map.center = {
+				lat: centerCoord[0],
+				lng: centerCoord[1],
+				zoom: 14
+			};
 		};
 
   	$scope.map.updateCoords = function(){
