@@ -162,7 +162,7 @@ angular.module('yapp')
 				if(response.data == "You haven't permission!")
 							$rootScope.logout();
 				else{
-					leafletData.getMap().then(function(map) {
+					//leafletData.getMap().then(function(map) {
 					 console.log(response.data);
 					var coords = response.data;
 					allCoords = coords;
@@ -211,7 +211,7 @@ angular.module('yapp')
 
 					console.log('new coords: ', $scope.map.coordinates);
 						deffered.resolve();
-						});
+						//});
 				}
   		});
       
@@ -229,7 +229,7 @@ angular.module('yapp')
 
       $scope.map.center.lat = (Math.min.apply(null, $scope.map.coordinates[dateNum].lat)+Math.max.apply(null, $scope.map.coordinates[dateNum].lat))/2;
         $scope.map.center.lng = (Math.min.apply(null, $scope.map.coordinates[dateNum].lng)+Math.max.apply(null, $scope.map.coordinates[dateNum].lng))/2;
-        $scope.map.center.zoom = 16;
+        $scope.map.center.zoom = 14;
             
         var pathMinLat = Math.min.apply(null, $scope.map.coordinates[dateNum].lat),
             pathMaxLat = Math.max.apply(null, $scope.map.coordinates[dateNum].lat),
