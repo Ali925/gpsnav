@@ -158,6 +158,7 @@ angular.module('yapp')
   			url: $rootScope.apiurl + '/get/list/coordinates',
   			params: {api_token: api, user_id: $scope.map.selectedCourier.id}
   		}).then(function(response){
+				console.log('coords: ', response);
 				if(response.data == "You haven't permission!")
 							$rootScope.logout();
 				else{
@@ -208,7 +209,7 @@ angular.module('yapp')
 							oldDate = date;
 					}
 
-					console.log($scope.map.coordinates);
+					console.log('new coords: ', $scope.map.coordinates);
 						deffered.resolve();
 						});
 				}
