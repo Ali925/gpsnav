@@ -188,9 +188,33 @@ angular.module('yapp')
 					var latitudes = [], longitudes = [], date, time, oldDate, oldLat, oldLng, coordNum = 0, latlngs = [];
 
 				for(var coord in coords){
-
-							date = coords[coord].date.substring(0, 10);
-							time = coords[coord].date.substring(11);
+							var coordTime = new Date(coords[coord].date); 
+							var formatTime = coordTime.getFullYear() + '-';
+					
+							if(parseInt(coordTime.getMonth()+1) < 10)
+								formatTime = formatTime + '0' + parseInt(coordTime.getMonth()+1) + '-';
+							else
+								formatTime = formatTime + parseInt(coordTime.getMonth()+1) + '-';
+							if(parseInt(coordTime.getDate()) < 10)
+								formatTime = formatTime + '0' + parseInt(coordTime.getDate()) + 'T';
+							else
+								formatTime = formatTime + parseInt(coordTime.getDate()) + 'T';
+					
+							if(parseInt(coordTime.getHours()) < 10)
+								formatTime = formatTime + '0' + parseInt(coordTime.getHours()) + ':';
+							else
+								formatTime = formatTime + parseInt(coordTime.getHours()) + ':';
+							if(parseInt(coordTime.getMinutes()) < 10)
+								formatTime = formatTime + '0' + parseInt(coordTime.getMinutes()) + ':';
+							else
+								formatTime = formatTime + parseInt(coordTime.getMinutes()) + ':';
+							if(parseInt(coordTime.getSeconds()) < 10)
+								formatTime = formatTime + '0' + parseInt(coordTime.getSeconds());
+							else
+								formatTime = formatTime + parseInt(coordTime.getSeconds());
+					
+							date = formatTime.substring(0, 10);
+							time = formatTime.substring(11);
 
 							if(date!==oldDate && coord!=0 && latlngs.length){
 								latitudes = [];
