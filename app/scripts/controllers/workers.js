@@ -83,7 +83,7 @@ angular.module('yapp')
         data: params
       }).then(function successCallback(response){
         console.log(response);  
-				if(response.data == "You haven't permission!")
+				if(response.data.message == "You haven't permission!")
 							$rootScope.logout();
         else if(response.data==="success"){
           $scope.workers.managerScreen = '1';
@@ -164,7 +164,7 @@ if($scope.workers.newCourier.username && $scope.workers.newCourier.name && $scop
 			data: params
 		}).then(function successCallback(response){
 			console.log(response);	
-			if(response.data == "You haven't permission!")
+			if(response.data.message == "You haven't permission!")
 							$rootScope.logout();
 			else if(response.data==="success"){
 				$scope.workers.courierScreen = '1';
@@ -226,7 +226,7 @@ else {
   			data: {api_token: api, user_id: id}
   		}).then(function successCallback(response){
   			console.log(response);
-				if(response.data == "You haven't permission!")
+				if(response.data.message == "You haven't permission!")
 							$rootScope.logout();
   			else if(response.data == 'success'){
   				$scope.workers.managerScreen = '1';
@@ -247,7 +247,7 @@ else {
   			data: {api_token: api, user_id: id}
   		}).then(function successCallback(response){
   			console.log(response);
-				if(response.data == "You haven't permission!")
+				if(response.data.message == "You haven't permission!")
 							$rootScope.logout();
   			else if(response.data == 'success'){
   				$scope.workers.courierScreen = '1';
@@ -310,7 +310,7 @@ else {
 			data: params
 		}).then(function successCallback(response){
 			console.log(response);	
-			if(response.data == "You haven't permission!")
+			if(response.data.message == "You haven't permission!")
 							$rootScope.logout();
 			else if(response.data==="success"){
 				$scope.workers.managerScreen = '1';
@@ -425,7 +425,7 @@ else {
 			data: params
 		}).then(function successCallback(response){
 			console.log(response);	
-			if(response.data == "You haven't permission!")
+			if(response.data.message == "You haven't permission!")
 							$rootScope.logout();
 			else if(response.data==="success"){
 				$scope.workers.courierScreen = '1';
@@ -495,7 +495,7 @@ else {
 	  		params: {api_token: api}
 	  	}).then(function successCallback(response){
 	  		console.log(response);
-				if(response.data == "You haven't permission!")
+				if(response.data.message == "You haven't permission!")
 							$rootScope.logout();
 				else{
 					if(response.data.message!='Permission denied'){
@@ -516,7 +516,7 @@ else {
 						params: {api_token: api}
 					}).then(function successCallback(response){
 						console.log(response);
-						if(response.data == "You haven't permission!")
+						if(response.data.message == "You haven't permission!")
 							$rootScope.logout();
 						else if(response.data.message!='Permission denied'){
 							$scope.workers.couriersList = response.data;
@@ -552,7 +552,7 @@ else {
 						params: {api_token: api}
 					}).then(function successCallback(response){
 						console.log(response);
-						if(response.data == "You haven't permission!")
+						if(response.data.message == "You haven't permission!")
 							$rootScope.logout();
 						else if(response.data.message!='Permission denied'){
 							$scope.workers.couriersList = response.data;

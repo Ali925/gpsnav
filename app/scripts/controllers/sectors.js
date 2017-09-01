@@ -257,7 +257,7 @@ angular.module('yapp')
 					params: {api_token: api}
 				}).then(function successCallback(response){
 						console.log(response);
-						if(response.data == "You haven't permission!")
+						if(response.data.message == "You haven't permission!")
 							$rootScope.logout();
 						else{
 							for(var i in response.data){
@@ -370,7 +370,7 @@ angular.module('yapp')
 					data: data
 				}).then(function successCallback(response){
 						console.log(response);
-					if(response.data == "You haven't permission!")
+					if(response.data.message == "You haven't permission!")
 							$rootScope.logout();
 					else if(response.data == 'success'){
 						updateSectors();
@@ -415,7 +415,7 @@ angular.module('yapp')
 				data: {api_token: api, sectorID: $scope.sectors.selectedSector.id}
 			}).then(function successCallback(response){
 					console.log(response);
-				if(response.data == "You haven't permission!")
+				if(response.data.message == "You haven't permission!")
 							$rootScope.logout();
 				else if(response.data == 'success'){
 						updateSectors();
@@ -446,7 +446,7 @@ angular.module('yapp')
 					data: data
 				}).then(function successCallback(response){
 						console.log(response);
-					if(response.data == "You haven't permission!")
+					if(response.data.message == "You haven't permission!")
 								$rootScope.logout();
 					else if(response.data == 'success'){
 							updateSectors('edit');

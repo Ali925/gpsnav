@@ -77,7 +77,7 @@ angular.module('yapp')
         }).then(function successCallback(response){
             console.log(response);
 				
-					if(response.data == "You haven't permission!")
+					if(response.data.message == "You haven't permission!")
 							$rootScope.logout();
 				else{
 					$http({
@@ -86,14 +86,17 @@ angular.module('yapp')
 						params: {api_token: api}
 					}).then(function successCallback(sectors){
 							console.log(sectors);
-						$scope.map.sectors = sectors.data;
-						$scope.map.couriersList = response.data;
+						if(response.data.message == "You haven't permission!")
+							$rootScope.logout();
+						else{
+							$scope.map.sectors = sectors.data;
+							$scope.map.couriersList = response.data;
 
-            for(var i in $scope.map.couriersList){
+							for(var i in $scope.map.couriersList){
 
-              $scope.map.couriersList[i].fullName = $scope.map.couriersList[i].username + ' (' + $scope.map.couriersList[i].last_name + ' ' + $scope.map.couriersList[i].first_name + ' ' + $scope.map.couriersList[i].middle_name + ')';
-              }
-						
+								$scope.map.couriersList[i].fullName = $scope.map.couriersList[i].username + ' (' + $scope.map.couriersList[i].last_name + ' ' + $scope.map.couriersList[i].first_name + ' ' + $scope.map.couriersList[i].middle_name + ')';
+								}
+						}
 					}, function errorCallback(error){
 							console.log(error);
 					});
@@ -174,7 +177,7 @@ angular.module('yapp')
   			params: {api_token: api, user_id: $scope.map.selectedCourier.id}
   		}).then(function(response){
 				console.log('coords: ', response);
-				if(response.data == "You haven't permission!")
+				if(response.data.message == "You haven't permission!")
 							$rootScope.logout();
 				else{
 					//leafletData.getMap().then(function(map) {
