@@ -306,7 +306,9 @@ angular.module('yapp')
 						
 							if($scope.map.coordinates[dateNum].latlngs[coord].comment !== null && $scope.map.coordinates[dateNum].latlngs[coord].comment !== undefined && $scope.map.coordinates[dateNum].latlngs[coord].comment !== ''){
 								$scope.map.markers['marker' + coord].message += 'Комментарий: ' + $scope.map.coordinates[dateNum].latlngs[coord].comment + "<br>";
-							} else if($scope.map.coordinates[dateNum].latlngs[coord].newsNum !== null && $scope.map.coordinates[dateNum].latlngs[coord].newsNum !== undefined && $scope.map.coordinates[dateNum].latlngs[coord].newsNum !== 0){
+							}
+						
+							if($scope.map.coordinates[dateNum].latlngs[coord].newsNum !== null && $scope.map.coordinates[dateNum].latlngs[coord].newsNum !== undefined && $scope.map.coordinates[dateNum].latlngs[coord].newsNum !== 0){
 								$scope.map.markers['marker' + coord].message += 'Количество газет: ' + $scope.map.coordinates[dateNum].latlngs[coord].newsNum + "<br>";
 							}
 									
