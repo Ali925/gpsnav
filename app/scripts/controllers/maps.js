@@ -234,6 +234,7 @@ angular.module('yapp')
 									lng: parseFloat(coords[coord].longitude),
 									time: time,
 									comment: coords[coord].comment,
+									newsNum: coords[coord].news_num,
 									isManual: coords[coord].isManual,
 									isSuccess: coords[coord].isSuccess
 								});
@@ -300,8 +301,17 @@ angular.module('yapp')
               
               $scope.map.markers['marker' + coord].lat = latMarker+0.0005;
               $scope.map.markers['marker' + coord].lng = lngMarker-0.0005;
-            
-                $scope.map.markers['marker' + coord].message = $scope.map.coordinates[dateNum].latlngs[coord].comment + "<br>" + $scope.map.coordinates[dateNum].latlngs[coord].time;
+						
+							$scope.map.markers['marker' + coord].message = '';
+						
+							if($scope.map.coordinates[dateNum].latlngs[coord].comment !== null && $scope.map.coordinates[dateNum].latlngs[coord].comment !== undefined && $scope.map.coordinates[dateNum].latlngs[coord].comment !== ''){
+								$scope.map.markers['marker' + coord].message += 'Комментарий: ' + $scope.map.coordinates[dateNum].latlngs[coord].comment + "<br>";
+							} else if($scope.map.coordinates[dateNum].latlngs[coord].newsNum !== null && $scope.map.coordinates[dateNum].latlngs[coord].newsNum !== undefined && $scope.map.coordinates[dateNum].latlngs[coord].newsNum !== 0){
+								$scope.map.markers['marker' + coord].message += 'Количество газет: ' + $scope.map.coordinates[dateNum].latlngs[coord].newsNum + "<br>";
+							}
+									
+							$scope.map.markers['marker' + coord].message += $scope.map.coordinates[dateNum].latlngs[coord].time;
+						 
           
               if($scope.map.coordinates[dateNum].latlngs[coord].isSuccess==1){
                 $scope.map.markers['marker' + coord].message += "<br>Дом закончен";
