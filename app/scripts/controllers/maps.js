@@ -299,8 +299,8 @@ angular.module('yapp')
               var latMarker = $scope.map.coordinates[dateNum].latlngs[coord].lat;
               var lngMarker = $scope.map.coordinates[dateNum].latlngs[coord].lng;
               
-              $scope.map.markers['marker' + coord].lat = latMarker+0.0005;
-              $scope.map.markers['marker' + coord].lng = lngMarker-0.0005;
+              $scope.map.markers['marker' + coord].lat = latMarker;
+              $scope.map.markers['marker' + coord].lng = lngMarker;
 						
 							$scope.map.markers['marker' + coord].message = '';
 						
