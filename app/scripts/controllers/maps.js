@@ -106,7 +106,7 @@ angular.module('yapp')
     };
 	
 		$scope.map.updateSector = function(){
-			var paths = JSON.parse($scope.map.selectedSector.coords),
+			var paths = $scope.map.selectedSector.coords,
 					allSectorCoords = [];
 			
 			for(var m in $scope.map.markers){

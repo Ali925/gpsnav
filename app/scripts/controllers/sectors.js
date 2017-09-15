@@ -261,7 +261,7 @@ angular.module('yapp')
 							$rootScope.logout();
 						else{
 							for(var i in response.data){
-								response.data[i].coords = JSON.parse(response.data[i].coords);
+								response.data[i].coords = response.data[i].coords;
 							}
 							$scope.sectors.loadedSectors = response.data;
 							
