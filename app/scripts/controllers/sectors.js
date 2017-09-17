@@ -11,6 +11,27 @@ angular.module('yapp')
   .controller('SectorsCtrl', function($scope, $rootScope, $state, $timeout, $http, AuthService, leafletData, $q) {
 	
 	var api = AuthService.getApi();
+	
+	angular.extend($scope, {
+              center: {
+                lat: 25,
+								lng: 50,
+								zoom: 2
+              },
+              layers: {
+                baselayers: {
+                  mapboxGlLayer: {
+										name: 'Sample',
+										type: 'mapboxGL',
+										layerOptions: {
+											accessToken: 'pk.eyJ1IjoiZ3JlZW5jaDRhbGV4IiwiYSI6ImNpa242d2dtMzAwOGh3YW02dDd6eGIwb28ifQ.V8B9D1mUvD21JCkPRxpKxA',
+											style: 'mapbox://styles/greench4alex/cita9atqv000e2hr7v4htiycv'
+										}
+									}
+                },
+                overlays: {}
+              }
+            });
   
 	$scope.userType = AuthService.getUserType();
 	
@@ -36,26 +57,7 @@ angular.module('yapp')
 
   	$scope.map.tiles.url = 'https://api.mapbox.com/v4/mapbox.streets/{z}/{x}/{y}.png?access_token=' + auth_token;
 	
-		angular.extend($scope, {
-              center: {
-                lat: 25,
-								lng: 50,
-								zoom: 2
-              },
-              layers: {
-                baselayers: {
-                  mapboxGlLayer: {
-										name: 'Sample',
-										type: 'mapboxGL',
-										layerOptions: {
-											accessToken: 'pk.eyJ1IjoiZ3JlZW5jaDRhbGV4IiwiYSI6ImNpa242d2dtMzAwOGh3YW02dDd6eGIwb28ifQ.V8B9D1mUvD21JCkPRxpKxA',
-											style: 'mapbox://styles/greench4alex/cita9atqv000e2hr7v4htiycv'
-										}
-									}
-                },
-                overlays: {}
-              }
-            });
+		
 
 
   	$scope.map.initMap = function(){
