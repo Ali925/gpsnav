@@ -12,6 +12,8 @@ angular.module('yapp')
 	
 	var api = AuthService.getApi();
 	
+	$scope = {};
+	
 	angular.extend($scope, {
               center: {
                 lat: 25,
@@ -20,7 +22,7 @@ angular.module('yapp')
               },
               layers: {
                 baselayers: {
-                  mapboxGL: {
+                  mapboxGlLayer: {
 										name: 'Sample',
 										type: 'mapboxGL',
 										layerOptions: {
