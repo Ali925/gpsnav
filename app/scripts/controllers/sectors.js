@@ -12,8 +12,6 @@ angular.module('yapp')
 	
 	var api = AuthService.getApi();
 	
-	$scope = {};
-	
 	angular.extend($scope, {
               center: {
                 lat: 25,
