@@ -20,7 +20,7 @@ angular.module('yapp')
               },
               layers: {
                 baselayers: {
-                  mapboxGlLayer: {
+                  mapboxGL: {
 										name: 'Sample',
 										type: 'mapboxGL',
 										layerOptions: {
