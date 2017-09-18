@@ -39,15 +39,26 @@ angular.module('yapp')
 	
 		$scope.map.layers.overlays = {};
 	
+//		$scope.map.layers.baselayers = {
+//			mapboxGreench: {
+//                    name: 'Greench',
+//                    type: 'mapbox',
+//                    user: 'greench4alex',
+//                    key: 'cita9atqv000e2hr7v4htiycv',
+//                    apiKey: 'pk.eyJ1IjoiZ3JlZW5jaDRhbGV4IiwiYSI6ImNpa242d2dtMzAwOGh3YW02dDd6eGIwb28ifQ.V8B9D1mUvD21JCkPRxpKxA'
+//                }
+//		};
+	
 		$scope.map.layers.baselayers = {
-			mapboxGreench: {
-                    name: 'Greench',
-                    type: 'mapbox',
-                    user: 'greench4alex',
-                    key: 'cita9atqv000e2hr7v4htiycv',
-                    apiKey: 'pk.eyJ1IjoiZ3JlZW5jaDRhbGV4IiwiYSI6ImNpa242d2dtMzAwOGh3YW02dDd6eGIwb28ifQ.V8B9D1mUvD21JCkPRxpKxA'
-                }
-		};
+				mapboxGlLayer: {
+					name: 'Sample',
+					type: 'mapboxGL',
+					layerOptions: {
+						accessToken: 'pk.eyJ1IjoiZ3JlZW5jaDRhbGV4IiwiYSI6ImNpa242d2dtMzAwOGh3YW02dDd6eGIwb28ifQ.V8B9D1mUvD21JCkPRxpKxA',
+						style: 'mapbox://styles/greench4alex/cita9atqv000e2hr7v4htiycv'
+					}
+				}
+			};
 
   	$scope.map.initMap = function(){
 
