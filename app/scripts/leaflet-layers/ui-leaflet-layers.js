@@ -25,6 +25,7 @@
           }
         };
       };
+			console.log('delegate: ', $delegate);
       angular.extend($delegate, {
         GoogleLayerPlugin: basicFunction(L.Google),
         MapboxGL: basicFunction(L.mapboxGL),
@@ -72,6 +73,7 @@
         });
         return utfgrid;
       };
+			console.log('delegate: ', $delegate, $delegate.layerTypes);
       angular.extend($delegate.layerTypes, {
         google: {
           mustHaveUrl: false,
