@@ -75,9 +75,6 @@
       };
 			console.log('delegate: ', $delegate, $delegate.layerTypes);
 			
-			if($delegate.layerTypes === undefined || $delegate.layerTypes === null)
-				$delegate.layerTypes = {};
-			
       angular.extend($delegate.layerTypes, {
         google: {
           mustHaveUrl: false,
