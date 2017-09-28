@@ -157,7 +157,7 @@ angular
 
   }) 
     .controller('MainCtrl', function($scope, $rootScope){
-      $rootScope.apiurl = 'http://api-courier-tracer.herokuapp.com';
+      $rootScope.apiurl = 'https://api-courier-tracer.herokuapp.com';
     });
 
 
