@@ -81,6 +81,7 @@ angular.module('yapp')
 
     $scope.map.markers = {};
 		$scope.map.sectors = [];
+		$scope.map.products = {};
 
     $scope.map.startCouriers = function(){
 
@@ -104,12 +105,15 @@ angular.module('yapp')
 							$rootScope.logout();
 						else{
 							$scope.map.sectors = sectors.data;
+							
 							$scope.map.couriersList = response.data;
 
 							for(var i in $scope.map.couriersList){
 
 								$scope.map.couriersList[i].fullName = $scope.map.couriersList[i].username + ' (' + $scope.map.couriersList[i].last_name + ' ' + $scope.map.couriersList[i].first_name + ' ' + $scope.map.couriersList[i].middle_name + ')';
 								}
+							
+							
 						}
 					}, function errorCallback(error){
 							console.log(error);
@@ -122,7 +126,7 @@ angular.module('yapp')
 		$scope.map.updateSector = function(){
 			var paths = $scope.map.selectedSector.coords,
 					allSectorCoords = [];
-			
+			console.log('products: ', $scope.map.products);
 			for(var m in $scope.map.markers){
 				if(m.indexOf('sector') != -1)
 					delete $scope.map.markers[m];
@@ -155,6 +159,12 @@ angular.module('yapp')
 																												focus: false,
 																												draggable: false
 																											};
+				
+				if($scope.map.selectedDate.date && $scope.map.products[$scope.map.selectedCourier.id] && $scope.map.products[$scope.map.selectedCourier.id][$scope.map.selectedDate.date] && $scope.map.products[$scope.map.selectedCourier.id][$scope.map.selectedDate.date][$scope.map.selectedSector.id] && $scope.map.products[$scope.map.selectedCourier.id][$scope.map.selectedDate.date][$scope.map.selectedSector.id][res]){
+					$scope.map.markers['sector'+parseInt(res)].message = 'Количество газет в секторе ' + res + ': ' + $scope.map.products[$scope.map.selectedCourier.id][$scope.map.selectedDate.date][$scope.map.selectedSector.id][res] + '<br>' + 'Общее количество газет в ' + $scope.map.selectedSector.title + ': ' + $scope.map.products[$scope.map.selectedCourier.id][$scope.map.selectedDate.date][$scope.map.selectedSector.id].allCount;
+				} else if($scope.map.selectedDate.date && $scope.map.products[$scope.map.selectedCourier.id] && $scope.map.products[$scope.map.selectedCourier.id][$scope.map.selectedDate.date] && $scope.map.products[$scope.map.selectedCourier.id][$scope.map.selectedDate.date][$scope.map.selectedSector.id] && $scope.map.products[$scope.map.selectedCourier.id][$scope.map.selectedDate.date][$scope.map.selectedSector.id]){
+					$scope.map.markers['sector'+parseInt(res)].message = 'Количество газет в секторе ' + res + ': ' + '0' + '<br>' + 'Общее количество газет в ' + $scope.map.selectedSector.title + ': ' + $scope.map.products[$scope.map.selectedCourier.id][$scope.map.selectedDate.date][$scope.map.selectedSector.id].allCount;
+				}
 			}
 			
 			var centerCoord = getCentroid(allSectorCoords);
@@ -184,6 +194,7 @@ angular.module('yapp')
 			}
 
       $scope.map.selectedDate = {};
+			$scope.map.products = {};
 
   		$http({
   			method: 'GET',
@@ -196,7 +207,7 @@ angular.module('yapp')
 				else{
 					//leafletData.getMap().then(function(map) {
 					 console.log(response.data);
-					var coords = response.data;
+					var coords = response.data.coordResults;
 					allCoords = coords;
 					$scope.map.coordinates = [];
 					var latitudes = [], longitudes = [], date, time, oldDate, oldLat, oldLng, coordNum = 0, latlngs = [];
@@ -265,6 +276,74 @@ angular.module('yapp')
 
 							oldDate = date;
 					}
+					
+					var productsResults = response.data.prodResults;
+							
+							for(var p in productsResults){
+								var coordTime = new Date(productsResults[p].date); 
+								var formatTime = coordTime.getFullYear() + '-';
+
+								if(parseInt(coordTime.getMonth()+1) < 10)
+									formatTime = formatTime + '0' + parseInt(coordTime.getMonth()+1) + '-';
+								else
+									formatTime = formatTime + parseInt(coordTime.getMonth()+1) + '-';
+								if(parseInt(coordTime.getDate()) < 10)
+									formatTime = formatTime + '0' + parseInt(coordTime.getDate()) + 'T';
+								else
+									formatTime = formatTime + parseInt(coordTime.getDate()) + 'T';
+
+								if(parseInt(coordTime.getHours()) < 10)
+									formatTime = formatTime + '0' + parseInt(coordTime.getHours()) + ':';
+								else
+									formatTime = formatTime + parseInt(coordTime.getHours()) + ':';
+								if(parseInt(coordTime.getMinutes()) < 10)
+									formatTime = formatTime + '0' + parseInt(coordTime.getMinutes()) + ':';
+								else
+									formatTime = formatTime + parseInt(coordTime.getMinutes()) + ':';
+								if(parseInt(coordTime.getSeconds()) < 10)
+									formatTime = formatTime + '0' + parseInt(coordTime.getSeconds());
+								else
+									formatTime = formatTime + parseInt(coordTime.getSeconds());
+
+								productsResults[p].date = formatTime.substring(0, 10);
+
+								if($scope.map.products[productsResults[p].courier_id]){
+									if($scope.map.products[productsResults[p].courier_id][productsResults[p].date]){
+										if($scope.map.products[productsResults[p].courier_id][productsResults[p].date][productsResults[p].sector_id]){
+											$scope.map.products[productsResults[p].courier_id][productsResults[p].date][productsResults[p].sector_id].allCount += parseInt(productsResults[p].count);
+											
+											if($scope.map.products[productsResults[p].courier_id][productsResults[p].date][productsResults[p].sector_id][productsResults[p].sector_num]){
+												$scope.map.products[productsResults[p].courier_id][productsResults[p].date][productsResults[p].sector_id][productsResults[p].sector_num] += parseInt(productsResults[p].count);
+											} else {
+												$scope.map.products[productsResults[p].courier_id][productsResults[p].date][productsResults[p].sector_id][productsResults[p].sector_num] = parseInt(productsResults[p].count);
+											}
+										} else {
+											$scope.map.products[productsResults[p].courier_id][productsResults[p].date][productsResults[p].sector_id] = {};
+
+											$scope.map.products[productsResults[p].courier_id][productsResults[p].date][productsResults[p].sector_id].allCount = parseInt(productsResults[p].count);
+											$scope.map.products[productsResults[p].courier_id][productsResults[p].date][productsResults[p].sector_id][productsResults[p].sector_num] = parseInt(productsResults[p].count);
+										}
+									} else {
+											$scope.map.products[productsResults[p].courier_id][productsResults[p].date] = {};
+											$scope.map.products[productsResults[p].courier_id][productsResults[p].date][productsResults[p].sector_id] = {};
+
+											$scope.map.products[productsResults[p].courier_id][productsResults[p].date][productsResults[p].sector_id].allCount = parseInt(productsResults[p].count);
+											$scope.map.products[productsResults[p].courier_id][productsResults[p].date][productsResults[p].sector_id][productsResults[p].sector_num] = parseInt(productsResults[p].count);
+									}
+								} else {
+									$scope.map.products[productsResults[p].courier_id] = {};
+									
+									$scope.map.products[productsResults[p].courier_id][productsResults[p].date] = {};
+									
+									$scope.map.products[productsResults[p].courier_id][productsResults[p].date][productsResults[p].sector_id] = {};
+									
+									$scope.map.products[productsResults[p].courier_id][productsResults[p].date][productsResults[p].sector_id].allCount = parseInt(productsResults[p].count);
+									
+									$scope.map.products[productsResults[p].courier_id][productsResults[p].date][productsResults[p].sector_id][productsResults[p].sector_num] = parseInt(productsResults[p].count);
+								}
+								
+								console.log('coords products: ', $scope.map.products);
+							}
 
 					console.log('new coords: ', $scope.map.coordinates);
 						deffered.resolve();
@@ -277,6 +356,7 @@ angular.module('yapp')
 
     $scope.map.updateDates = function(){
       var selectedId = $scope.map.selectedDate;
+			//console.log('selected date: ', $scope.map.selectedDate);
       var myPromise = $scope.map.updateCoords();
       
       myPromise.then(function(resolve){
@@ -411,94 +491,10 @@ angular.module('yapp')
           }
       
       console.log(dateNum, $scope.map.markers);
-          
-//          geocoder.reverse({lat: $scope.map.coordinates[dateNum].latlngs[0].lat, lng: $scope.map.coordinates[dateNum].latlngs[0].lng}, map.options.crs.scale(map.getZoom()), function(results) {
-//                console.log(results);
-//
-//                    var bboxCoords = {
-//                      nE: results[2].bbox._northEast,
-//                      sW: results[2].bbox._southWest
-//                    };
-//
-//                    var minLat = bboxCoords.sW.lat, minLng = bboxCoords.sW.lng, maxLat = bboxCoords.nE.lat, maxLng = bboxCoords.nE.lng;
-//                    var minY = minLat, minX = minLng, maxY = maxLat, maxX = maxLng, o = 1, minXt, maxXt, minYt, maxYt, t=0;
-//                    console.log(maxY, minLat, '/', minX, maxLng);
-//              
-//                    while(minX<maxLng){
-//                    if(minX-0.01>=pathMinLng && minX-0.01<=pathMaxLng){    
-//                        if(!t)
-//                            minXt=minX-0.02;
-//                        t++;
-//                        maxXt = minX;
-//                    }
-//                      
-//                      minX += 0.01;
-//                    }
-//                    
-//                    t=0;
-//                    while(maxY>minLat){
-//                        if(maxY+0.005<=pathMaxLat && maxY+0.005>=pathMinLat){ 
-//                            if(!t)
-//                                maxYt = maxY+0.01;
-//                            t++;
-//                            minYt = maxY;
-//                        }
-//                      
-//                      maxY -= 0.005;
-//                    }
-//              
-//                    
-//              
-//                    minY = minLat; minX = minLng; maxY = maxLat; maxX = maxLng;
-//            
-//                    while(minX<maxLng){
-//                      var points = [[minY, minX], [maxY, minX]];
-//                      
-//                      L.polyline(points, {color: "red", weight: 1.5}).setStyle({'className': 'rectangle'}).addTo(map);
-//                      
-//                      minX += 0.01;
-//                    }
-//            
-//                    minY = minLat; minX = minLng; maxY = maxLat; maxX = maxLng;
-//            
-//                    while(maxY>minLat){
-//                      var points = [[maxY, minX], [maxY, maxX]];
-//                      
-//                      L.polyline(points, {color: "red", weight: 1.5}).setStyle({'className': 'rectangle'}).addTo(map);
-//                      
-//                      maxY -= 0.005;
-//                      
-//                    }
-//            
-//                    minY = minLat; minX = minLng; maxY = maxLat; maxX = maxLng;
-//            
-//                    while(maxY>minLat){
-//                      minX = minLng;
-//                      while(minX<maxLng){
-//                        if(minX+0.01>=pathMinLng && minX<=pathMaxLng && maxY-0.005<=pathMaxLat && maxY>=pathMinLat){ 
-//                        $scope.map.markers['sectorMarker'+o] = {lat: maxY-0.0025, lng: minX+0.005};
-//                        $scope.map.markers['sectorMarker'+o].icon = {
-//                                                              type: 'div',
-//                                                              iconSize: [230, 0],
-//                                                              html: '<b>'+o+'</b>',
-//                                                              iconAnchor:  [0, 0]
-//                                                          };
-//                            o++;
-//                        }
-//
-//                        minX += 0.01;
-//                        
-//                      }
-//                      maxY -= 0.005;
-//                    }
-//              $('i.fa-comment').parent().addClass('comment-icon');
-//          $('i.fa-clock-o').parent().addClass('clock-icon'); 
-//
-//              });
-         
-    //});
+          if($scope.map.selectedSector && $scope.map.selectedSector.id)
+      			$scope.map.updateSector();
     });
-      
+			
     };
 
     function timeToSeconds(time){

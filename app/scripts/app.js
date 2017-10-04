@@ -158,6 +158,7 @@ angular
   }) 
     .controller('MainCtrl', function($scope, $rootScope){
       $rootScope.apiurl = 'http://194.58.119.225:5000';
+			//$rootScope.apiurl = 'http://localhost:5000';
     });
 
 
