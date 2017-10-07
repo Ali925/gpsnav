@@ -17,7 +17,7 @@ angular.module('yapp')
 	$scope.map = {};
 	$scope.sectors = {};
 	
-	var geocoder, geocontrol, numberMarkers = [], isMarkerClicked = false, selectedSectorID;
+	var geocoder, geocontrol, numberMarkers = [], isMarkerClicked = false, selectedSectorID, isFirstSector = true, newSectorID;
 
     $scope.map.center = {
       lat: 25,
@@ -86,7 +86,7 @@ angular.module('yapp')
 		$scope.sectors.sectorTitle = null;
 
     $scope.$on('leafletDirectiveMap.click', function(event, args){
-        console.log("Click", args.leafletEvent.latlng);
+        //console.log("Click", args.leafletEvent.latlng);
 				var key = false;
 				isMarkerClicked = false;
 				if($scope.sectors.addNewSectorStarted || $scope.sectors.editSectorStarted){
@@ -106,7 +106,7 @@ angular.module('yapp')
 								lat: args.leafletEvent.latlng.lat,
 								lng: args.leafletEvent.latlng.lng
 							});
-						console.log(sectorPoints);
+						//console.log(sectorPoints);
 						sectorPoints++;
 					} else {
 						for(var i in $scope.map.markers){
@@ -135,7 +135,7 @@ angular.module('yapp')
 								lat: args.leafletEvent.latlng.lat,
 								lng: args.leafletEvent.latlng.lng
 							});
-						console.log(sectorPoints);
+						//console.log(sectorPoints);
 						sectorPoints++;
 						}
 					}
@@ -144,10 +144,11 @@ angular.module('yapp')
     });
 	
 		$scope.$on('leafletDirectiveMarker.click', function(event, args){
-					console.log('Marker: ', event, args);
+					//console.log('Marker: ', event, args);
 				isMarkerClicked = false;
 				if($scope.sectors.addNewSectorStarted || $scope.sectors.editSectorStarted){
 					if(args.modelName == "1" && sectorPoints > 3){
+						if($scope.sectors.addNewSectorStarted && $scope.sectors.sectorTitle || $scope.sectors.editSectorStarted && $scope.sectors.selectedSector.title){
 						$timeout(function(){
 							if(!isMarkerClicked){
 								$scope.map.paths["p"+$scope.sectors.sectorNum].latlngs.push({
@@ -176,14 +177,86 @@ angular.module('yapp')
 
 							sectorPoints = 1;
 							$scope.sectors.sectorNum++;
+							
+							if($scope.sectors.addNewSectorStarted && isFirstSector){
+								isFirstSector = false;
+									var data = {
+										api_token: api,
+										sectorTitle: $scope.sectors.sectorTitle,
+										sectorCoords: $scope.map.paths
+									};
+
+									$http({
+										method: 'POST',
+										url: $rootScope.apiurl + '/add/sectors',
+										data: data
+									}).then(function successCallback(response){
+											console.log(response);
+										if(response.data.message == "You haven't permission!")
+												$rootScope.logout();
+										else if(response.data.message == 'success'){
+											newSectorID = response.data.id;
+										}
+									}, function errorCallback(error){
+											console.log(error);
+									});
+							} else if($scope.sectors.addNewSectorStarted && !isFirstSector){
+								var data = {
+									api_token: api,
+									sectorID: newSectorID,
+									sectorTitle: $scope.sectors.sectorTitle,
+									sectorCoords: $scope.map.paths
+								};
+								$http({
+									method: 'POST',
+									url: $rootScope.apiurl + '/edit/sectors',
+									data: data
+								}).then(function successCallback(response){
+										console.log(response);
+									if(response.data.message == "You haven't permission!")
+												$rootScope.logout();
+									else if(response.data == 'success'){
+											//updateSectors('edit');
+										}
+								}, function errorCallback(error){
+										console.log(error);
+								});
+							} else {
+								var data = {
+											api_token: api,
+											sectorID: $scope.sectors.selectedSector.id,
+											sectorTitle: $scope.sectors.selectedSector.title,
+											sectorCoords: $scope.sectors.selectedSector.coords
+										};
+										selectedSectorID = $scope.sectors.selectedSector.id;
+										$http({
+											method: 'POST',
+											url: $rootScope.apiurl + '/edit/sectors',
+											data: data
+										}).then(function successCallback(response){
+												console.log(response);
+											if(response.data.message == "You haven't permission!")
+														$rootScope.logout();
+											else if(response.data == 'success'){
+													//updateSectors('edit');
+												}
+										}, function errorCallback(error){
+												console.log(error);
+										});
+							}
 						} 
 						}, 300);
+						} else if ($scope.sectors.addNewSectorStarted){
+							$scope.sectors.tooltipAddShow = true;
+						} else if($scope.sectors.editSectorStarted){
+							$scope.sectors.tooltipEditShow = true;
+						}
 					}
 				} 
 		});
 	
 		$scope.$on('leafletDirectivePath.click', function (event, args) {
-          console.log('Path: ', event, args);
+          //console.log('Path: ', event, args);
 					var key = false;
 					isMarkerClicked = false;
 					if($scope.sectors.addNewSectorStarted || $scope.sectors.editSectorStarted){
@@ -203,7 +276,7 @@ angular.module('yapp')
 									lat: args.leafletEvent.latlng.lat,
 									lng: args.leafletEvent.latlng.lng
 								});
-							console.log(sectorPoints);
+							//console.log(sectorPoints);
 							sectorPoints++;
 						} else {
 							for(var i in $scope.map.markers){
@@ -232,7 +305,7 @@ angular.module('yapp')
 									lat: args.leafletEvent.latlng.lat,
 									lng: args.leafletEvent.latlng.lng
 								});
-							console.log(sectorPoints);
+							//console.log(sectorPoints);
 							sectorPoints++;
 							}
 						}
@@ -240,9 +313,9 @@ angular.module('yapp')
     });
 	
 		$scope.$on('leafletDirectiveMarker.dblclick', function(event, args){
-        console.log("DoubleClick", args);
+        //console.log("DoubleClick", args);
 				
-				if($scope.sectors.addNewSectorStarted || $scope.sectors.editSectorStarted){
+				if(args.modelName.indexOf('num') == -1 && $scope.sectors.addNewSectorStarted || $scope.sectors.editSectorStarted){
 					if(args.modelName == '1')
 					 isMarkerClicked = true;
 						var key = false;
@@ -304,7 +377,7 @@ angular.module('yapp')
 		};
 	
 		$scope.sectors.updateMap = function(){
-			console.log($scope.sectors.selectedSector);
+			//console.log($scope.sectors.selectedSector);
 			
 			$scope.map.paths = {};
 			$scope.map.markers = {};
@@ -361,6 +434,7 @@ angular.module('yapp')
 		$scope.sectors.addNew = function(){
 			$scope.sectors.addNewSectorStarted = true;
 			$scope.sectors.selectedSector = null;
+			isFirstSector = true;
 			
 			$scope.map.paths = {};
 			$scope.map.markers = {};
@@ -396,15 +470,53 @@ angular.module('yapp')
 		};
 	
 		$scope.sectors.cancelAddNew = function(){
-			$scope.sectors.addNewSectorStarted = false;
-			$scope.sectors.selectedSector = null;
-			
-			$scope.map.paths = {};
-			$scope.map.markers = {};
-			
-			sectorPoints = 1, numberMarkers = [], isMarkerClicked = false; 
-			
-			$scope.sectors.sectorNum = 1;
+			if($scope.sectors.sectorTitle && $scope.map.paths["p1"] && $scope.map.paths["p1"].latlngs.length && !$scope.map.markers[1]){
+				if(!isFirstSector){
+								var data = {
+									api_token: api,
+									sectorID: newSectorID,
+									sectorTitle: $scope.sectors.sectorTitle,
+									sectorCoords: $scope.map.paths
+								};
+								$http({
+									method: 'POST',
+									url: $rootScope.apiurl + '/edit/sectors',
+									data: data
+								}).then(function successCallback(response){
+										console.log(response);
+									if(response.data.message == "You haven't permission!")
+												$rootScope.logout();
+									else if(response.data == 'success'){
+											//updateSectors('edit');
+											$scope.sectors.addNewSectorStarted = false;
+											$scope.sectors.selectedSector = null;
+											$scope.sectors.sectorTitle = '';
+
+											$scope.map.paths = {};
+											$scope.map.markers = {};
+
+											sectorPoints = 1, numberMarkers = [], isMarkerClicked = false; 
+
+											$scope.sectors.sectorNum = 1;
+											updateSectors();
+										}
+								}, function errorCallback(error){
+										console.log(error);
+								});
+				} 
+				
+			} else {
+				$scope.sectors.addNewSectorStarted = false;
+				$scope.sectors.selectedSector = null;
+
+				$scope.map.paths = {};
+				$scope.map.markers = {};
+
+				sectorPoints = 1, numberMarkers = [], isMarkerClicked = false; 
+
+				$scope.sectors.sectorNum = 1;
+				updateSectors();
+			}
 		};
 	
 		$scope.sectors.removeLastSector = function(){
@@ -472,9 +584,57 @@ angular.module('yapp')
 		};
 	
 		$scope.sectors.cancelEdit = function(){
-			$scope.sectors.editSectorStarted = false;
-			selectedSectorID = $scope.sectors.selectedSector.id;
-			updateSectors('cancel');		
+			if($scope.sectors.selectedSector.title && $scope.sectors.selectedSector.coords["p1"] && $scope.map.paths["p1"].latlngs.length && !$scope.map.markers[1]){
+				
+				var data = {
+											api_token: api,
+											sectorID: $scope.sectors.selectedSector.id,
+											sectorTitle: $scope.sectors.selectedSector.title,
+											sectorCoords: $scope.sectors.selectedSector.coords
+										};
+										selectedSectorID = $scope.sectors.selectedSector.id;
+										$http({
+											method: 'POST',
+											url: $rootScope.apiurl + '/edit/sectors',
+											data: data
+										}).then(function successCallback(response){
+												console.log(response);
+											if(response.data.message == "You haven't permission!")
+														$rootScope.logout();
+											else if(response.data == 'success'){
+													//updateSectors('edit');
+													$scope.sectors.editSectorStarted = false;
+													selectedSectorID = $scope.sectors.selectedSector.id;
+													$scope.sectors.tooltipEditShow = false;
+													updateSectors('edit');
+												}
+										}, function errorCallback(error){
+												console.log(error);
+										});
+				
+					
+			} else {
+				$scope.sectors.editSectorStarted = false;
+				selectedSectorID = $scope.sectors.selectedSector.id;
+				$scope.sectors.tooltipEditShow = false;
+				updateSectors('edit');
+			}
+		};
+	
+		$scope.sectors.updateAddInput = function(){
+			if(!$scope.sectors.sectorTitle){
+				$scope.sectors.tooltipAddShow = true;
+			} else {
+				$scope.sectors.tooltipAddShow = false;
+			}
+		};
+	
+		$scope.sectors.updateEditInput = function(){
+			if(!$scope.sectors.selectedSector.title){
+				$scope.sectors.tooltipEditShow = true;
+			} else {
+				$scope.sectors.tooltipEditShow = false;
+			}
 		};
 	
 		function updateSectors(type){

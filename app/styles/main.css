@@ -177,6 +177,10 @@ td,
 th {
   padding: 0;
 }
+
+input.error{
+	background-color: rgba(255,0,0,0.5);
+}
 /*! Source: https://github.com/h5bp/html5-boilerplate/blob/master/src/css/main.css */
 @media print {
   *,

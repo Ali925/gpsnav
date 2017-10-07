@@ -16,25 +16,23 @@
 		   </div>
 		 </div>
 		 <div class="form-group sector-new-buttons-group" ng-if="sectors.addNewSectorStarted">
-			 <div class="btn-group btn-group-sm" role="group" aria-label="sector-buttons">
-			 		<button type="button" class="btn btn-danger" ng-click="sectors.saveNew()">Сохранить</button>
-			 		<button type="button" class="btn btn-primary" ng-click="sectors.cancelAddNew()">Отмена</button>
+			 <div class="btn-group" role="group" aria-label="sector-buttons">
+			 		<button type="button" class="btn btn-primary" ng-click="sectors.cancelAddNew()">Назад</button>
 			 </div>	    
 		 </div>
 		 <div class="form-group sector-new-buttons-group" ng-if="sectors.editSectorStarted">
-			 <div class="btn-group btn-group-sm" role="group" aria-label="sector-buttons">
-			 		<button type="button" class="btn btn-danger" ng-click="sectors.saveEdit()">Сохранить</button>
-			 		<button type="button" class="btn btn-primary" ng-click="sectors.cancelEdit()">Отмена</button>
+			 <div class="btn-group" role="group" aria-label="sector-buttons">
+			 		<button type="button" class="btn btn-primary" ng-click="sectors.cancelEdit()">Назад</button>
 			 </div>	    
 		 </div>
 		 <div class="form-group select-sector" ng-if="sectors.editSectorStarted">
 		    <label for="titleOfSector">Имя сектора</label>
-    		<input type="text" class="form-control" id="titleOfSector" placeholder="Вводите имя..." ng-model='sectors.selectedSector.title'>
+    		<input type="text" tooltip-placement="bottom" uib-tooltip-template="'./views/titleTooltipTemplate.html'" tooltip-is-open="sectors.tooltipEditShow" ng-class="{'error': sectors.tooltipEditShow}" tooltip-trigger="'none'" class="form-control" id="titleOfSector" placeholder="Вводите имя..." ng-model='sectors.selectedSector.title' ng-change="sectors.updateEditInput()">
 		 </div>
 		 
 		 <div class="form-group select-sector" ng-if="sectors.addNewSectorStarted">
 		    <label for="titleOfSector">Имя сектора</label>
-    		<input type="text" class="form-control" id="titleOfSector" placeholder="Вводите имя..." ng-model='sectors.sectorTitle'>
+    		<input type="text" tooltip-placement="bottom" uib-tooltip-template="'./views/titleTooltipTemplate.html'" tooltip-is-open="sectors.tooltipAddShow" ng-class="{'error': sectors.tooltipAddShow}" tooltip-trigger="'none'" class="form-control" id="titleOfSector" placeholder="Вводите имя..." ng-model='sectors.sectorTitle' ng-change="sectors.updateAddInput()">
 		 </div>
 		 <div class="form-group remove-sector" ng-if="(sectors.addNewSectorStarted || sectors.editSectorStarted) && sectors.sectorNum > 1">
 		    <button type="button" class="btn btn-danger" ng-click="sectors.removeLastSector()">- Удалить сектор {{sectors.sectorNum - 1}}</button>

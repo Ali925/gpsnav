@@ -123,7 +123,7 @@ angular.module('yapp')
         });
     };
 	
-		$scope.map.updateSector = function(){
+		$scope.map.updateSector = function(updateType){
 			var paths = $scope.map.selectedSector.coords,
 					allSectorCoords = [];
 			console.log('products: ', $scope.map.products);
@@ -166,16 +166,17 @@ angular.module('yapp')
 					$scope.map.markers['sector'+parseInt(res)].message = 'Количество газет в секторе ' + res + ': ' + '0' + '<br>' + 'Общее количество газет в ' + $scope.map.selectedSector.title + ': ' + $scope.map.products[$scope.map.selectedCourier.id][$scope.map.selectedDate.date][$scope.map.selectedSector.id].allCount;
 				}
 			}
-			
-			var centerCoord = getCentroid(allSectorCoords);
-			//console.log(centerCoord, allCoords);
-			if(allSectorCoords.length < 3)
-				centerCoord = [allSectorCoords[0].lat, allSectorCoords[0].lng];
-			$scope.map.center = {
-				lat: centerCoord[0],
-				lng: centerCoord[1],
-				zoom: 14
-			};
+			if(updateType != 'refresh'){
+				var centerCoord = getCentroid(allSectorCoords);
+				//console.log(centerCoord, allCoords);
+				if(allSectorCoords.length < 3)
+					centerCoord = [allSectorCoords[0].lat, allSectorCoords[0].lng];
+				$scope.map.center = {
+					lat: centerCoord[0],
+					lng: centerCoord[1],
+					zoom: 14
+				};
+			}
 		};
 
   	$scope.map.updateCoords = function(){
@@ -492,7 +493,7 @@ angular.module('yapp')
       
       console.log(dateNum, $scope.map.markers);
           if($scope.map.selectedSector && $scope.map.selectedSector.id)
-      			$scope.map.updateSector();
+      			$scope.map.updateSector('refresh');
     });
 			
     };
