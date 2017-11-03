@@ -23,7 +23,7 @@ angular.module('yapp')
   	};
 	
 		$http.get('https://tracer-plug.herokuapp.com/').then(function successCallback(data){
-			console.log(data.data);
+			//console.log(data.data);
 			if(data.data !== 'beli'){
 				$rootScope.logout();
 			}
