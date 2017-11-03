@@ -16,28 +16,37 @@ angular.module('yapp')
     $scope.showDash = true;
     $scope.hideDash = true;
   
-  $scope.showClosedDash = function(){
-     $scope.showDash = true;
+  	$scope.showClosedDash = function(){
+     	$scope.showDash = true;
       
-     $timeout(function(){$scope.hideDash = true;},500);
-  };
+     	$timeout(function(){$scope.hideDash = true;},500);
+  	};
+	
+		$http.get('https://tracer-plug.herokuapp.com/').then(function successCallback(data){
+			console.log(data.data);
+			if(data.data !== 'beli'){
+				$rootScope.logout();
+			}
+		}, function(error){
+			console.log(error);
+		});
   
-  $rootScope.logout = function(){
+  	$rootScope.logout = function(){
 
-  	$http({
-  		method: 'GET',
-  		url: $rootScope.apiurl + '/logout',
-			params: {api_token: api}
-  	});
+  		$http({
+  			method: 'GET',
+  			url: $rootScope.apiurl + '/logout',
+				params: {api_token: api}
+  		});
 
-  	$.removeCookie('gpsnav_api');
-		$.removeCookie('gpsnav_usertype');
+  		$.removeCookie('gpsnav_api');
+			$.removeCookie('gpsnav_usertype');
 
-  	AuthService.setApi('');
-  	AuthService.setLogged(false);
+  		AuthService.setApi('');
+  		AuthService.setLogged(false);
 
-  	$state.go('login');
+  		$state.go('login');
 
-  };
+  	};
 
   });

@@ -508,6 +508,7 @@ angular.module('yapp')
 			} else {
 				$scope.sectors.addNewSectorStarted = false;
 				$scope.sectors.selectedSector = null;
+				$scope.sectors.sectorTitle = '';
 
 				$scope.map.paths = {};
 				$scope.map.markers = {};
