@@ -22,14 +22,14 @@ angular.module('yapp')
      	$timeout(function(){$scope.hideDash = true;},500);
   	};
 	
-		$http.get('https://tracer-plug.herokuapp.com/').then(function successCallback(data){
-			//console.log(data.data);
-			if(data.data !== 'beli'){
-				$rootScope.logout();
-			}
-		}, function(error){
-			console.log(error);
-		});
+//		$http.get('https://tracer-plug.herokuapp.com/').then(function successCallback(data){
+//			//console.log(data.data);
+//			if(data.data !== 'beli'){
+//				$rootScope.logout();
+//			}
+//		}, function(error){
+//			console.log(error);
+//		});
   
   	$rootScope.logout = function(){
 
