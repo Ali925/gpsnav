@@ -8,7 +8,7 @@
  * Controller of yapp
  */
 angular.module('yapp')
-  .controller('MapsCtrl', function($scope, $rootScope, $state, $timeout, $http, AuthService, leafletData, $q) {
+  .controller('MapsCtrl', function($scope, $rootScope, $state, $timeout, $http, AuthService, leafletData, $q, mySocket) {
 
   	var api = AuthService.getApi();
   	$scope.userType = AuthService.getUserType();
@@ -28,6 +28,8 @@ angular.module('yapp')
 //  	$scope.map.tiles = {};
 		$scope.map.layers = {};
   	$scope.map.height = $(window).height()*0.82 + 'px';
+	
+		$scope.socket = mySocket();
 
 //  	var auth_token = 'pk.eyJ1IjoiYWxpOTI1IiwiYSI6ImNpcHZobHIxMzAwNTZpMWtzcmFrdmk2OXcifQ.7AB_LOCsVI6kUn_vPDUXkg';
 //
@@ -90,7 +92,7 @@ angular.module('yapp')
           url: $rootScope.apiurl + '/get/list/courier',
           params: {api_token: api}
         }).then(function successCallback(response){
-            console.log(response);
+            console.log('couriers list: ', response);
 				
 					if(response.data.message == "You haven't permission!")
 							$rootScope.logout();
@@ -101,7 +103,7 @@ angular.module('yapp')
 						params: {api_token: api}
 					}).then(function successCallback(sectors){
 							console.log(sectors);
-						if(response.data.message == "You haven't permission!")
+						if(sectors.data.message == "You haven't permission!")
 							$rootScope.logout();
 						else{
 							$scope.map.sectors = sectors.data;
@@ -111,6 +113,8 @@ angular.module('yapp')
 							for(var i in $scope.map.couriersList){
 
 								$scope.map.couriersList[i].fullName = $scope.map.couriersList[i].username + ' (' + $scope.map.couriersList[i].last_name + ' ' + $scope.map.couriersList[i].first_name + ' ' + $scope.map.couriersList[i].middle_name + ')';
+								if($scope.map.couriersList[i].startedTrace)
+									$scope.map.couriersList[i].fullName += " *Онлайн"
 								}
 							
 							
@@ -182,7 +186,6 @@ angular.module('yapp')
   	$scope.map.updateCoords = function(){
       var deffered = $q.defer();
        $('.rectangle').remove();
-      
       $scope.map.paths['trace'] = {
                 color: '#73b6e6',
                 weight: 4,
@@ -270,13 +273,19 @@ angular.module('yapp')
 								lat: latitudes,
 								lng: longitudes,
 								latlngs: latlngs,
-								id: coordNum
+								id: coordNum,
+								title: date
 							};
+								
+								
 
 							}
 
 							oldDate = date;
 					}
+					
+					if($scope.map.selectedCourier.startedTrace)
+						$scope.map.coordinates[($scope.map.coordinates.length-1)].title = "*Онлайн";
 					
 					var productsResults = response.data.prodResults;
 							
@@ -434,7 +443,17 @@ angular.module('yapp')
           }
           else if(coord == $scope.map.coordinates[dateNum].latlngs.length-1){
             $scope.map.markers['marker' + coord] = $scope.map.coordinates[dateNum].latlngs[coord];
-            $scope.map.markers['marker' + coord].message = "Конец<br>" + $scope.map.coordinates[dateNum].latlngs[coord].time;
+						if($scope.map.selectedCourier.startedTrace && $scope.map.selectedDate.title == "*Онлайн"){
+							var icon = {};
+            	icon.iconSize = [40, 40];
+            	icon.iconAnchor = [10, 10];
+            	icon.type = 'div';
+							$scope.map.markers['marker' + coord].message = "Сейчас<br>" + $scope.map.coordinates[dateNum].latlngs[coord].time;
+							icon.html = "<i class='fa fa-circle' aria-hidden='true' style = 'color:#7eff7e;font-size: 22px;'></i>";
+							$scope.map.markers['marker' + coord].icon = icon;
+						}
+						else
+							$scope.map.markers['marker' + coord].message = "Конец<br>" + $scope.map.coordinates[dateNum].latlngs[coord].time;
             pathEnded = true;
           }
           else{
@@ -482,10 +501,30 @@ angular.module('yapp')
             if($scope.map.paths.trace.latlngs.length>1){
                 if($scope.map.markers['marker' + coord].message.indexOf('Дом')==-1){
                   $scope.map.markers['marker' + coord] = $scope.map.paths.trace.latlngs[$scope.map.paths.trace.latlngs.length-1];
-                  $scope.map.markers['marker' + coord].message = "Конец<br>" + $scope.map.paths.trace.latlngs[$scope.map.paths.trace.latlngs.length-1].time;
+									if($scope.map.selectedCourier.startedTrace && $scope.map.selectedDate.title == "*Онлайн"){
+										var icon = {};
+            				icon.iconSize = [40, 40];
+            				icon.iconAnchor = [10, 10];
+            				icon.type = 'div';
+                  	$scope.map.markers['marker' + coord].message = "Сейчас<br>" + $scope.map.paths.trace.latlngs[$scope.map.paths.trace.latlngs.length-1].time;
+										icon.html = "<i class='fa fa-circle' aria-hidden='true' style = 'color:#7eff7e;font-size: 22px;'></i>";
+										$scope.map.markers['marker' + coord].icon = icon;
+									}
+									else
+										$scope.map.markers['marker' + coord].message = "Конец<br>" + $scope.map.paths.trace.latlngs[$scope.map.paths.trace.latlngs.length-1].time;
                 }
                 else {
-                    $scope.map.markers['marker' + coord].message = "Конец<br>" + $scope.map.markers['marker' + coord].message;
+									if($scope.map.selectedCourier.startedTrace && $scope.map.selectedDate.title == "*Онлайн"){
+										var icon = {};
+            				icon.iconSize = [40, 40];
+            				icon.iconAnchor = [10, 10];
+            				icon.type = 'div';
+                    $scope.map.markers['marker' + coord].message = "Сейчас<br>" + $scope.map.markers['marker' + coord].message;
+										icon.html = "<i class='fa fa-circle' aria-hidden='true' style = 'color:#7eff7e;font-size: 22px;'></i>";
+										$scope.map.markers['marker' + coord].icon = icon;
+									}
+									else
+										$scope.map.markers['marker' + coord].message = "Конец<br>" + $scope.map.markers['marker' + coord].message;
                 }
                 pathEnded = true;
             }
@@ -497,7 +536,46 @@ angular.module('yapp')
     });
 			
     };
-
+	
+		$scope.socket.on("couirerOnline", function(data){
+			console.log(data);
+			for(var c in $scope.map.couriersList){
+				if($scope.map.couriersList[c].id == data.user_id){
+					$scope.map.couriersList[c].startedTrace = true;
+					$scope.map.couriersList[c].fullName += " *Онлайн";
+					$scope.map.coordinates[($scope.map.coordinates.length-1)].title = "*Онлайн";
+					break;
+				}
+			}
+		});
+	
+		$scope.socket.on("couirerOffline", function(data){
+			console.log(data);
+			for(var c in $scope.map.couriersList){
+				if($scope.map.couriersList[c].id == data.user_id){
+					$scope.map.couriersList[c].startedTrace = false;
+					$scope.map.couriersList[c].fullName = $scope.map.couriersList[c].fullName.substr(0, $scope.map.couriersList[c].fullName.length - 8);
+					$scope.map.coordinates[($scope.map.coordinates.length-1)].title = $scope.map.coordinates[($scope.map.coordinates.length-1)].date;
+					break;
+				}
+			}
+			
+			if($scope.map.selectedCourier.id == data.user_id){
+				console.log("okokk");
+				$scope.map.updateDates();
+			}
+		});
+	
+		$scope.socket.on("currentCoord", function(data){
+			console.log(data);
+			if($scope.map.selectedCourier.id == data.courier_id)
+				$scope.map.updateDates();
+		});
+	
+	  $scope.$on('$destroy', function(){
+        $scope.socket.disconnect();
+    });
+	
     function timeToSeconds(time){
       var hours = parseInt(time.substring(0, 2));
       var mins = parseInt(time.substring(3, 5));

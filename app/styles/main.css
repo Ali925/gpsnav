@@ -6774,7 +6774,7 @@ button.close {
 .dashboard-page .maps-page h2:first-child {
   float: left;
 }
-.dashboard-page .maps-page .map-selects {
+.dashboard-page .maps-page .map-selects{
   width: 90%;
   float: right;
   position: relative;
@@ -6786,10 +6786,13 @@ button.close {
   position: relative;
   margin-top: 0px;
 }
-.dashboard-page .maps-page .map-selects .form-group {
+.dashboard-page .maps-page .map-selects .form-group{
   width: 32%;
   display: inline-block;
   float: right;
+}
+.dashboard-page .reports-page .map-selects .form-group{
+	display: inline-block;
 }
 .dashboard-page .maps-page .sector-selects .form-group {
   width: 15%;
@@ -6817,7 +6820,7 @@ button.close {
   width: 40%;
   margin-top: 0px;
 }
-.dashboard-page .maps-page .jumbotron {
+.dashboard-page .maps-page .jumbotron{
   padding: 0;
   margin-top: 20px;
   clear: both;
@@ -6983,4 +6986,31 @@ div.leaflet-marker-icon.comment-icon{
 
 div.leaflet-marker-icon.clock-icon{
   z-index: 999999 !important;
+}
+
+.dashboard-page .maps-page .sector-selects .form-group.remove-sector{
+	width: 24%;
+	margin-top: 0px;
+	margin-right: 15px;
+	position: relative;
+}
+
+.dashboard-page .maps-page .sector-selects .form-group.remove-sector>input{
+	width: 62%;
+}
+
+.dashboard-page .maps-page .sector-selects .form-group.remove-sector>button{
+	  position: absolute;
+    right: 0px;
+    bottom: 0;	
+}
+
+.reports-buttons-group{
+		padding-top: 45px;
+    padding-right: 0px;
+    padding-left: 0px;
+}
+
+.reports-buttons-group button{
+	font-size: .9em;
 }

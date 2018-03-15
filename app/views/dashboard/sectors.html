@@ -34,8 +34,10 @@
 		    <label for="titleOfSector">Имя сектора</label>
     		<input type="text" tooltip-placement="bottom" uib-tooltip-template="'./views/titleTooltipTemplate.html'" tooltip-is-open="sectors.tooltipAddShow" ng-class="{'error': sectors.tooltipAddShow}" tooltip-trigger="'none'" class="form-control" id="titleOfSector" placeholder="Вводите имя..." ng-model='sectors.sectorTitle' ng-change="sectors.updateAddInput()">
 		 </div>
-		 <div class="form-group remove-sector" ng-if="(sectors.addNewSectorStarted || sectors.editSectorStarted) && sectors.sectorNum > 1">
-		    <button type="button" class="btn btn-danger" ng-click="sectors.removeLastSector()">- Удалить сектор {{sectors.sectorNum - 1}}</button>
+		 <div class="form-group remove-sector" ng-if="(sectors.addNewSectorStarted || sectors.editSectorStarted) && sectors.sectorNum >= 1 && sectors.showRemoveBtn">
+		    <label for="numberOfSector">Удалить сектор </label>
+		    <input type="number" class="form-control" ng-model='sectors.removeSectorNumber' placeholder="Вводите номер" ng-class="{'error': sectors.removeInputError}">
+		    <button type="button" class="btn btn-danger" ng-click="sectors.removeLastSector()">Удалить</button>
 		 </div>
 		 <div class="form-group" ng-if="!sectors.addNewSectorStarted && !sectors.editSectorStarted">
 		   <button type="button" class="btn btn-success" ng-click="sectors.addNew()">+ Новый сектор</button>

@@ -17,7 +17,7 @@ angular.module('yapp')
 	$scope.map = {};
 	$scope.sectors = {};
 	
-	var geocoder, geocontrol, numberMarkers = [], isMarkerClicked = false, selectedSectorID, isFirstSector = true, newSectorID;
+	var geocoder, geocontrol, numberMarkers = {}, isMarkerClicked = false, selectedSectorID, isFirstSector = true, newSectorID;
 
     $scope.map.center = {
       lat: 25,
@@ -80,10 +80,13 @@ angular.module('yapp')
 		$scope.sectors.selectedSector = null;
 		$scope.sectors.editSectorStarted = false;
 		$scope.sectors.isEditable = false;
+		$scope.sectors.showRemoveBtn = false;
+		$scope.sectors.removeInputError = false;
 	
 		var sectorPoints = 1; 
 		$scope.sectors.sectorNum = 1;
 		$scope.sectors.sectorTitle = null;
+		$scope.sectors.removeSectorNumber = null;
 
     $scope.$on('leafletDirectiveMap.click', function(event, args){
         //console.log("Click", args.leafletEvent.latlng);
@@ -159,24 +162,33 @@ angular.module('yapp')
 
 							var centroid = getCentroid($scope.map.paths["p"+$scope.sectors.sectorNum].latlngs);
 
-							numberMarkers.push({
-								lat: centroid[0],
-								lng: centroid[1],
-								icon: {
-													 type: 'div',
-													 iconSize: [0, 0],
-													 html: '<b>'+$scope.sectors.sectorNum+'</b>',
-													 iconAnchor:  [0, 0]
-											},
-								focus: false,
-								draggable: false
-							});
-							for(var i=1;i<=$scope.sectors.sectorNum;i++){
-								$scope.map.markers['num'+i] = numberMarkers[i-1];
+							numberMarkers[$scope.sectors.sectorNum] = {
+											lat: centroid[0],
+											lng: centroid[1],
+											icon: {
+																 type: 'div',
+																 iconSize: [0, 0],
+																 html: '<b>'+$scope.sectors.sectorNum+'</b>',
+																 iconAnchor:  [0, 0]
+														},
+											focus: false,
+											draggable: false
+										};
+								
+							for(var i in numberMarkers){
+								$scope.map.markers['num'+i] = numberMarkers[i];
 							}
 
 							sectorPoints = 1;
-							$scope.sectors.sectorNum++;
+							var foundKey = false;
+							
+							while(!foundKey){
+								$scope.sectors.sectorNum++;
+								if(!$scope.map.paths["p" + $scope.sectors.sectorNum]){
+									foundKey = true;
+									$scope.map.paths[Object.keys($scope.map.paths)[Object.keys($scope.map.paths).length-1]].lastSecNum = $scope.sectors.sectorNum;	
+								} 
+							}
 							
 							if($scope.sectors.addNewSectorStarted && isFirstSector){
 								isFirstSector = false;
@@ -196,6 +208,7 @@ angular.module('yapp')
 												$rootScope.logout();
 										else if(response.data.message == 'success'){
 											newSectorID = response.data.id;
+											$scope.sectors.showRemoveBtn = true;
 										}
 									}, function errorCallback(error){
 											console.log(error);
@@ -217,6 +230,7 @@ angular.module('yapp')
 												$rootScope.logout();
 									else if(response.data == 'success'){
 											//updateSectors('edit');
+										$scope.sectors.showRemoveBtn = true;
 										}
 								}, function errorCallback(error){
 										console.log(error);
@@ -239,6 +253,7 @@ angular.module('yapp')
 														$rootScope.logout();
 											else if(response.data == 'success'){
 													//updateSectors('edit');
+												$scope.sectors.showRemoveBtn = true;
 												}
 										}, function errorCallback(error){
 												console.log(error);
@@ -315,7 +330,7 @@ angular.module('yapp')
 		$scope.$on('leafletDirectiveMarker.dblclick', function(event, args){
         //console.log("DoubleClick", args);
 				
-				if(args.modelName.indexOf('num') == -1 && $scope.sectors.addNewSectorStarted || $scope.sectors.editSectorStarted){
+				if(args.modelName.indexOf('num') == -1 && ($scope.sectors.addNewSectorStarted || $scope.sectors.editSectorStarted)){
 					if(args.modelName == '1')
 					 isMarkerClicked = true;
 						var key = false;
@@ -382,12 +397,12 @@ angular.module('yapp')
 			$scope.map.paths = {};
 			$scope.map.markers = {};
 			
-			sectorPoints = 1, numberMarkers = [], isMarkerClicked = false; 
-			
-			$scope.sectors.sectorNum = 1;
+			sectorPoints = 1, numberMarkers = {}, isMarkerClicked = false; 
 			
 			$scope.map.paths = $scope.sectors.selectedSector.coords;
 			var allCoords = [];
+			
+			$scope.sectors.sectorNum = parseInt($scope.map.paths[Object.keys($scope.map.paths)[Object.keys($scope.map.paths).length-1]].lastSecNum);
 			
 			for(var i in $scope.map.paths){
 				
@@ -396,22 +411,22 @@ angular.module('yapp')
 					lat: centroid[0],
 					lng: centroid[1]
 				});
-				var res = i.substring(1);
+				var res = parseInt(i.substring(1));
 				
-							numberMarkers.push({
-								lat: centroid[0],
-								lng: centroid[1],
-								icon: {
-													 type: 'div',
-													 iconSize: [0, 0],
-													 html: '<b>'+res+'</b>',
-													 iconAnchor:  [0, 0]
-											},
-								focus: false,
-								draggable: false
-							});
+							numberMarkers[res] = {
+																				lat: centroid[0],
+																				lng: centroid[1],
+																				icon: {
+																									 type: 'div',
+																									 iconSize: [0, 0],
+																									 html: '<b>'+res+'</b>',
+																									 iconAnchor:  [0, 0]
+																							},
+																				focus: false,
+																				draggable: false
+																			};
 
-							$scope.map.markers['num'+parseInt(res)] = numberMarkers[parseInt(res)-1];
+							$scope.map.markers['num'+res] = numberMarkers[res];
 
 			}
 			
@@ -435,11 +450,12 @@ angular.module('yapp')
 			$scope.sectors.addNewSectorStarted = true;
 			$scope.sectors.selectedSector = null;
 			isFirstSector = true;
+			$scope.sectors.showRemoveBtn = false;
 			
 			$scope.map.paths = {};
 			$scope.map.markers = {};
 			
-			sectorPoints = 1, numberMarkers = [], isMarkerClicked = false; 
+			sectorPoints = 1, numberMarkers = {}, isMarkerClicked = false; 
 			
 			$scope.sectors.sectorNum = 1;
 		};
@@ -495,7 +511,7 @@ angular.module('yapp')
 											$scope.map.paths = {};
 											$scope.map.markers = {};
 
-											sectorPoints = 1, numberMarkers = [], isMarkerClicked = false; 
+											sectorPoints = 1, numberMarkers = {}, isMarkerClicked = false; 
 
 											$scope.sectors.sectorNum = 1;
 											updateSectors();
@@ -513,7 +529,7 @@ angular.module('yapp')
 				$scope.map.paths = {};
 				$scope.map.markers = {};
 
-				sectorPoints = 1, numberMarkers = [], isMarkerClicked = false; 
+				sectorPoints = 1, numberMarkers = {}, isMarkerClicked = false; 
 
 				$scope.sectors.sectorNum = 1;
 				updateSectors();
@@ -521,18 +537,33 @@ angular.module('yapp')
 		};
 	
 		$scope.sectors.removeLastSector = function(){
-			if($scope.map.markers[1]){
-				sectorPoints = 1;
-				for(var m in $scope.map.markers){
-					if(m.indexOf('num') == -1)
-						delete $scope.map.markers[m];
+			console.log($scope.sectors.removeSectorNumber, $scope.map.paths,$scope.map.markers,numberMarkers);
+			if($scope.map.paths["p"+$scope.sectors.removeSectorNumber]){
+				$scope.sectors.removeInputError = false;
+				if($scope.map.markers[1]){
+					sectorPoints = 1;
+					for(var m in $scope.map.markers){
+						if(m.indexOf('num') == -1)
+							delete $scope.map.markers[m];
+					}
+					delete $scope.map.paths["p"+$scope.sectors.sectorNum];
 				}
-				delete $scope.map.paths["p"+$scope.sectors.sectorNum];
+				delete $scope.map.paths["p"+$scope.sectors.removeSectorNumber];
+				delete $scope.map.markers["num" + $scope.sectors.removeSectorNumber];
+				delete numberMarkers[$scope.sectors.removeSectorNumber];
+				if(parseInt($scope.sectors.removeSectorNumber)<$scope.sectors.sectorNum){
+					$scope.sectors.sectorNum = parseInt($scope.sectors.removeSectorNumber);
+					if($scope.map.paths[Object.keys($scope.map.paths)[Object.keys($scope.map.paths).length-1]]){
+						$scope.map.paths[Object.keys($scope.map.paths)[Object.keys($scope.map.paths).length-1]].lastSecNum = $scope.sectors.removeSectorNumber;	
+					}
+				}
+				$scope.sectors.removeSectorNumber = null;
+				if(!Object.keys($scope.map.paths).length){
+					$scope.sectors.showRemoveBtn = false;
+				}
+			} else {
+				$scope.sectors.removeInputError = true;
 			}
-			delete $scope.map.paths["p"+($scope.sectors.sectorNum-1)];
-			delete $scope.map.markers["num" + ($scope.sectors.sectorNum-1)];
-			numberMarkers.splice((numberMarkers.length-1), 1);
-			$scope.sectors.sectorNum--;
 		};
 	
 		$scope.sectors.removeSector = function(){
@@ -555,7 +586,14 @@ angular.module('yapp')
 		$scope.sectors.editSector = function(){
 			$scope.sectors.editSectorStarted = true;
 			
-			$scope.sectors.sectorNum = Object.keys($scope.sectors.selectedSector.coords).length + 1;
+			if(isNaN(parseInt($scope.map.paths[Object.keys($scope.map.paths)[Object.keys($scope.map.paths).length-1]].lastSecNum))){
+				$scope.sectors.sectorNum = Object.keys($scope.sectors.selectedSector.coords).length + 1;
+			} else {
+				$scope.sectors.sectorNum = parseInt($scope.map.paths[Object.keys($scope.map.paths)[Object.keys($scope.map.paths).length-1]].lastSecNum);
+			}
+			
+			console.log($scope.sectors.sectorNum, parseInt($scope.map.paths[Object.keys($scope.map.paths)[Object.keys($scope.map.paths).length-1]].lastSecNum));
+			$scope.sectors.showRemoveBtn = true;
 		};
 	
 		$scope.sectors.saveEdit = function(){
@@ -585,6 +623,8 @@ angular.module('yapp')
 		};
 	
 		$scope.sectors.cancelEdit = function(){
+			$scope.sectors.removeInputError = false;
+			$scope.sectors.removeSectorNumber = null;
 			if($scope.sectors.selectedSector.title && $scope.sectors.selectedSector.coords["p1"] && $scope.map.paths["p1"].latlngs.length && !$scope.map.markers[1]){
 				
 				var data = {
@@ -648,35 +688,25 @@ angular.module('yapp')
 			$scope.map.paths = {};
 			$scope.map.markers = {};
 			
-			sectorPoints = 1, numberMarkers = [], isMarkerClicked = false; 
+			sectorPoints = 1, numberMarkers = {}, isMarkerClicked = false; 
 			
 			$scope.sectors.sectorNum = 1;
 		}
 	
 	  function getCentroid(array) {
-		
-			var arr = [];
+			//console.log('coords array: ', array);
+			var latsArr = [], lngsArr = [], maxLat, maxLng, minLat, minLng;
 			for(var a in array){
-				arr.push([array[a].lat, array[a].lng]);
+				latsArr.push(array[a].lat);
+				lngsArr.push(array[a].lng);
 			}
-
-				var twoTimesSignedArea = 0;
-				var cxTimes6SignedArea = 0;
-				var cyTimes6SignedArea = 0;
-
-				var length = arr.length
-
-				var x = function (i) { return arr[i % length][0] };
-				var y = function (i) { return arr[i % length][1] };
-
-				for ( var i = 0; i < arr.length; i++) {
-						var twoSA = x(i)*y(i+1) - x(i+1)*y(i);
-						twoTimesSignedArea += twoSA;
-						cxTimes6SignedArea += (x(i) + x(i+1)) * twoSA;
-						cyTimes6SignedArea += (y(i) + y(i+1)) * twoSA;
-				}
-				var sixSignedArea = 3 * twoTimesSignedArea;
-				return [ cxTimes6SignedArea / sixSignedArea, cyTimes6SignedArea / sixSignedArea];        
+			
+			maxLat = Math.max.apply(null, latsArr);
+			maxLng = Math.max.apply(null, lngsArr);
+			minLat = Math.min.apply(null, latsArr);
+      minLng = Math.min.apply(null, lngsArr); 
+	
+		return [(maxLat+minLat)/2, (maxLng+minLng)/2];		
 	}
 	
 });

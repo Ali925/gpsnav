@@ -1,0 +1,55 @@
+<div class="reports-page clearfix" ng-init="reports.startReports()">
+<!--	<a ui-sref="reports" class="pull-right btn btn-primary btn-outline btn-rounded">Reports</a>-->
+	<h2>Отчеты</h2>
+	<div class="map-selects row">
+	<div class="form-group col col-md-2">
+	    <label for="selectManager1" class="col-sm-8 col-md-6 control-label">Выберите курьера</label>
+	    <div class="col-sm-10">
+	      <select class="form-control" id="selectManager1" ng-options="item as item.fullName for item in reports.couriers track by item.id" ng-model="reports.selectedCourier" ng-change="reports.updateCoords()"></select>
+		   </div>
+		 </div>
+		 <div class="form-group col col-md-3">
+		   <label for="selectManager1" class="col-sm-8 col-md-7 control-label">Выберите начальную дату</label>
+		   <div class="col-sm-10">
+		     <select class="form-control" id="selectManager1" ng-options="item as item.date for item in reports.coordinates track by item.id" sg-options-disabled="o.disabled == true for o in reports.startDates" ng-model="reports.selectedStartDate" ng-change="reports.updateStartDate()"></select>
+		   </div>
+		 </div>
+		 <div class="form-group col col-md-3">
+		   <label for="selectManager1" class="col-sm-8 col-md-7 control-label">Выберите конечную дату</label>
+		   <div class="col-sm-10">
+		     <select class="form-control" id="selectManager1" ng-options="item as item.date for item in reports.coordinates track by item.id" sg-options-disabled="o.disabled == true for o in reports.endDates" ng-model="reports.selectedEndDate" ng-change="reports.updateEndDate()"></select>
+		   </div>
+		 </div>
+		 <div class="form-group col col-md-2">
+		   <label for="selectManager1" class="col-sm-8 col-md-6 control-label">Выберите сектор</label>
+		   <div class="col-sm-10">
+		     <select class="form-control" id="selectManager1" ng-options="item as item.title for item in reports.sectors track by item.id" ng-model="reports.selectedSector"></select>
+		   </div>
+		 </div>
+	<div class="form-group reports-buttons-group col col-md-2">
+			 <div class="btn-group" role="group" aria-label="sector-buttons">
+			 		<button type="button" class="btn btn-primary" ng-click="reports.showReport()" ng-disabled="reports.selectedCourier == null || reports.selectedStartDate == null || reports.selectedEndDate == null || reports.selectedSector == null">Сформировывать отчет</button>
+			 </div>	    
+		 </div>
+		</div>
+	<div class="jumbotron">
+		<div class="container">
+			<table class="table">
+				<thead>
+					<tr>
+						<th scope="col">Кол-во положенных газет</th>
+						<th scope="col">Пройденное расстояние</th>
+						<th scope="col">Номера закрытых секторов</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>{{reports.productsCount}}</td>
+						<td>{{reports.traceDistance}}</td>
+						<td>{{reports.closedSectors}}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>

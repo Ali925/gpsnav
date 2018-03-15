@@ -15,6 +15,7 @@
         <li ng-class="{active: $state.includes('maps')}"><a ui-sref="maps">Карта</a></li>
         <li ng-class="{active: $state.includes('workers')}"><a ui-sref="workers">Менеджеры и курьеры</a></li>
         <li ng-class="{active: $state.includes('sectors')}"><a ui-sref="sectors">Секторы</a></li>
+        <li ng-class="{active: $state.includes('reports')}"><a ui-sref="reports">Отчеты</a></li>
       </ul>
 
     </div>
@@ -38,6 +39,11 @@
         <li ng-class="{active: $state.includes('sectors')}">
             <a ui-sref="sectors" class="sidebar-nav-buttons">
                 <i class="fa fa-crop" aria-hidden="true"></i>
+            </a>
+        </li>
+        <li ng-class="{active: $state.includes('reports')}">
+            <a ui-sref="reports" class="sidebar-nav-buttons">
+                <i class="fa fa-file-text" aria-hidden="true"></i>
             </a>
         </li>
       </ul>
