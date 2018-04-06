@@ -176,6 +176,8 @@ angular.module('yapp')
 					console.log('all coords: ', $scope.reports.coordinates);
 					
 					var productsResults = response.data.prodResults, allProducts = [], cDate = "";
+					
+					console.log("all products: ", productsResults);
 							
 					for(var p in productsResults){
 						if(productsResults[p].courier_id == $scope.reports.selectedCourier.id){

@@ -139,12 +139,13 @@ angular.module('yapp')
 
 
   	$scope.workers.addNewCourier = function(){
-if($scope.workers.newCourier.username && $scope.workers.newCourier.name && $scope.workers.newCourier.middlename && $scope.workers.newCourier.surname && $scope.workers.newCourier.branch && $scope.workers.newCourier.email && $scope.workers.newCourier.phone && $scope.workers.newCourier.date && ($scope.userType!=='manager' && $scope.workers.newCourier.manager || $scope.userType=='manager')){
+if($scope.workers.newCourier.username && $scope.workers.newCourier.name && $scope.workers.newCourier.middlename && $scope.workers.newCourier.surname && $scope.workers.newCourier.branch && $scope.workers.newCourier.passcode && $scope.workers.newCourier.email && $scope.workers.newCourier.phone && $scope.workers.newCourier.date && ($scope.userType!=='manager' && $scope.workers.newCourier.manager || $scope.userType=='manager')){
   		var date = new Date($scope.workers.newCourier.date).getTime();
 
   		var params = {
   			api_token: api,
   			email: $scope.workers.newCourier.email,
+				passcode: $scope.workers.newCourier.passcode,
   			phone: $scope.workers.newCourier.phone,
   			username: $scope.workers.newCourier.username,
   			password: $scope.workers.newCourier.password,
@@ -202,6 +203,10 @@ else {
           $scope.workers.newCourier.emailE = true;
         else
           $scope.workers.newCourier.emailE = false;
+				if(!$scope.workers.newCourier.passcode)
+          $scope.workers.newCourier.passcodeE = true;
+        else
+          $scope.workers.newCourier.passcodeE = false;
         if(!$scope.workers.newCourier.phone)
           $scope.workers.newCourier.phoneE = true;
         else
@@ -376,6 +381,7 @@ else {
   			surname: $scope.workers.currentCourier.last_name,
   			middlename: $scope.workers.currentCourier.middle_name,
   			email:$scope.workers.currentCourier.email,
+				passcode: $scope.workers.currentCourier.passcode,
   			phone: $scope.workers.currentCourier.phone,
   			branch: $scope.workers.currentCourier.filial_id,
   			date: $scope.workers.currentCourier.date_start_work
@@ -406,6 +412,7 @@ else {
   			api_token: api,
   			user_id: $scope.workers.currentCourier.id,
   			email: $scope.workers.editCourier.email,
+				passcode: $scope.workers.editCourier.passcode,
   			phone: $scope.workers.editCourier.phone,
   			username: $scope.workers.editCourier.username,
   			password: $scope.workers.editCourier.password,
@@ -471,6 +478,10 @@ else {
           $scope.workers.editCourier.emailE = true;
         else
           $scope.workers.editCourier.emailE = false;
+				if(!$scope.workers.editCourier.passcode)
+          $scope.workers.editCourier.passcodeE = true;
+        else
+          $scope.workers.editCourier.passcodeE = false;
         if(!$scope.workers.editCourier.phone)
           $scope.workers.editCourier.phoneE = true;
         else
